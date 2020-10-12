@@ -28,7 +28,6 @@
   <preference name="FadeSplashScreen" value="true"/>
   <preference name="FadeSplashScreenDuration" value="250"/>
   <preference name="KeyboardDisplayRequiresUserAction" value="true"/>
-  <preference name="MediaPlaybackRequiresUserAction" value="false"/>
   <preference name="ShowSplashScreenSpinner" value="false"/>
   <preference name="SuppressesIncrementalRendering" value="false"/>
   <preference name="TopActivityIndicator" value="gray"/>
@@ -96,6 +95,8 @@
     <edit-config target="NSContactsUsageDescription" file="*-Info.plist" mode="merge">
         <string>need contacts access to search friends</string>
     </edit-config>
+    <preference name="scheme" value="monaca-app"/>
+    <preference name="hostname" value="localhost"/>
   </platform>
   <platform name="android">
     <preference name="android-targetSdkVersion" value="29" />
@@ -120,4 +121,5 @@
     <preference name="SplashScreenHeight" value="300"/>
     <preference name="ShowSplashScreen" value="false"/>
   </platform>
+  <preference name="MediaTypesRequiringUserActionForPlayback" value="false"/>
 </widget>
