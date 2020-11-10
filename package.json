@@ -1,6 +1,6 @@
 {
   "name": "monaca-template-helloworld",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "displayName": "Monaca Template HelloCordova",
   "scripts": {
     "monaca:preview": "npm run dev",
