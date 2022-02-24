@@ -4,11 +4,7 @@
   <description/>
   <author/>
   <content src="index.html"/>
-  <access origin="*"/>
   <allow-navigation href="*"/>
-  <allow-intent href="itms:*"/>
-  <allow-intent href="itms-apps:*"/>
-  <allow-intent href="tel:*"/>
 
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="Orientation" value="default"/>
