@@ -1,10 +1,16 @@
-const { expect, browser, $ } = require('@wdio/globals')
+const { expect, browser, $ } = require('@wdio/globals');
 
-const url = 'http://localhost:8080';
 
-describe('Hello World Navigation', () => {
+
+describe('Hello World', () => {
+    const url = 'http://localhost:8080';
+    const screenshotDir = './test/screenshots';
+
     it('Home Page', async () => {        
         await browser.url(url);
+
+        // Capture screenshot of Home Page
+        await browser.saveScreenshot(`${screenshotDir}/home_page.png`);
 
         // Verify the heading exists
         const heading = $('h1');
@@ -26,6 +32,9 @@ describe('Hello World Navigation', () => {
             }
         );
 
+        // Capture screenshot after navigation
+        await browser.saveScreenshot(`${screenshotDir}/demo_page_navigation.png`);
+
         // Verify content in demo.html
         const demoHeading = $('h2');
         await expect(demoHeading).toHaveText('this file is demo.html');
@@ -33,7 +42,10 @@ describe('Hello World Navigation', () => {
 
     describe('Demo Page', () => {
         it('should display all content and buttons correctly', async () => {
-            await browser.url('http://localhost:8080/demo.html');
+            await browser.url(`${url}/demo.html`);
+
+            // Capture screenshot of Demo Page
+            await browser.saveScreenshot(`${screenshotDir}/demo_page.png`);
     
             // Verify headings
             const mainHeading = $('h1');
@@ -50,6 +62,9 @@ describe('Hello World Navigation', () => {
             await expect($('#width')).toBeDisplayed();
             await expect($('#height')).toBeDisplayed();
             await expect($('#colorDepth')).toBeDisplayed();
+
+            // Capture screenshot of the info section
+            await browser.saveScreenshot(`${screenshotDir}/demo_page_info_section.png`);
     
             // Verify buttons exist and are clickable
             const buttons = [
@@ -65,6 +80,9 @@ describe('Hello World Navigation', () => {
                 await expect(button).toBeDisplayed();
                 await expect(button).toHaveText(btn.text);
             }
+
+            // Capture screenshot after verifying buttons
+            await browser.saveScreenshot(`${screenshotDir}/demo_page_buttons.png`);
     
             // Verify the image container is initially hidden
             const viewport = $('#viewport');
