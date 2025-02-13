@@ -1,11 +1,9 @@
 const { expect, browser, $ } = require('@wdio/globals');
 
-
+const url = 'http://localhost:8080';
+const screenshotDir = './test/screenshots';
 
 describe('Hello World', () => {
-    const url = 'http://localhost:8080';
-    const screenshotDir = './test/screenshots';
-
     it('Home Page', async () => {        
         await browser.url(url);
 
