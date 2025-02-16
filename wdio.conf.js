@@ -5,6 +5,7 @@ exports.config = {
     // ====================
     // WebdriverIO supports running e2e tests as well as unit and component tests.
     runner: 'local',
+    port: 4723,
     //
     // ==================
     // Specify Test Files
@@ -49,19 +50,25 @@ exports.config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
+    // capabilities: [{
+    //     // capabilities for local Appium web tests on an Android Emulator
+    //     platformName: 'Android',
+    //     browserName: 'Chrome',
+    //     'appium:deviceName': 'Android GoogleAPI Emulator',
+    //     'appium:platformVersion': '12.0',
+    //     'appium:automationName': 'UiAutomator2'
+    // }],
     capabilities: [{
-        browserName: 'chrome',
-        'goog:chromeOptions': {
-            args: [
-                '--no-sandbox',
-                '--disable-dev-shm-usage',
-                '--headless',
-                '--disable-gpu',
-                '--remote-debugging-port=9222',
-                `--user-data-dir=/tmp/chrome-user-${Date.now()}`
-            ]
-        }
+        platformName: 'Android',
+        browserName: 'Chrome',
+        'appium:deviceName': 'Pixel_3a_API_34_extension_level_7_arm64-v8a',
+        'appium:platformVersion': '14.0',
+        'appium:automationName': 'UiAutomator2',
+        'appium:chromedriverExecutable': './chromedriver',  // ✅ Use manually downloaded version
+        webSocketUrl: true,
+        unhandledPromptBehavior: 'ignore'
     }],
+      
 
     //
     // ===================
@@ -110,8 +117,8 @@ exports.config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    // services: [],
-    //
+    services: ['appium'],
+
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber
     // see also: https://webdriver.io/docs/frameworks
