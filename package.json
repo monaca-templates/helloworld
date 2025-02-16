@@ -20,7 +20,8 @@
     "appium-chromium-driver": "^1.5.0",
     "appium-uiautomator2-driver": "^4.0.1",
     "browser-sync": "~2.27.7",
-    "cordova": "^12.0.0"
+    "cordova": "^12.0.0",
+    "cordova-android": "^13.0.0"
   },
   "dependencies": {
     "cordova-plugin-camera": "6.0.0",
@@ -33,13 +34,20 @@
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-camera": {},
+      "cordova-plugin-camera": {
+        "ANDROIDX_CORE_VERSION": "1.6.+"
+      },
       "cordova-plugin-device": {},
-      "cordova-plugin-geolocation": {},
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      },
       "cordova-plugin-network-information": {},
       "cordova-plugin-vibration": {},
       "monaca-plugin-monaca-core": {},
       "cordova-plugin-inappbrowser": {}
-    }
+    },
+    "platforms": [
+      "android"
+    ]
   }
 }

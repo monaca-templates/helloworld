@@ -1,16 +1,33 @@
-const { expect, browser, $ } = require('@wdio/globals')
+const { expect, browser, $ } = require('@wdio/globals');
 
-describe('My Login application', () => {
-    it('should login with valid credentials', async () => {
-        await browser.url(`https://the-internet.herokuapp.com/login`)
+describe('My Cordova App', () => {
+    it('should open the app and verify the home page', async () => {
+        // ✅ Activate the app
+        await driver.execute('mobile: activateApp', { appId: 'com.example.helloworld' });
 
-        await $('#username').setValue('tomsmith')
-        await $('#password').setValue('SuperSecretPassword!')
-        await $('button[type="submit"]').click()
+        // ✅ Wait for the app to fully load
+        await browser.pause(3000);
 
-        await expect($('#flash')).toBeExisting()
-        await expect($('#flash')).toHaveText(
-            expect.stringContaining('You logged into a secure area!'))
-    })
-})
+        // ✅ Get and switch to the WebView context
+        const contexts = await browser.getContexts();
+        console.log('Available contexts:', contexts);
 
+        if (contexts.length > 1) {
+            await browser.switchContext(contexts[1]);
+        } else {
+            console.warn('No WebView context found, staying in native mode');
+        }
+
+        // ✅ Try to locate the <h1> header
+        const homeHeader = await $('h1');
+        await homeHeader.waitForExist({ timeout: 10000 });
+
+        // ✅ Verify text
+        await expect(homeHeader).toHaveText('HelloWorld!');
+
+        // ✅ Verify and click "Start Demo" button
+        const demoButton = await $('a.button--large');
+        await expect(demoButton).toBeExisting();
+        await demoButton.click();
+    });
+});
