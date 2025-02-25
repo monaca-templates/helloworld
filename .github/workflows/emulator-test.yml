@@ -1,50 +1,73 @@
-name: Emulator Test
+name: Emulator & Appium Tests
 
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        api-level: [21, 23, 29]
     steps:
-      - name: checkout
+      # ✅ Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Create udev rules directory
+        run: |
+          sudo mkdir -p /etc/udev/rules.d/
+
+      # ✅ Enable KVM for emulator acceleration
       - name: Enable KVM
         run: |
+          sudo apt-get update
+          sudo apt-get install -y udev
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
-        
-      - name: AVD cache
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd-${{ matrix.api-level }}
+      # ✅ Add Android Platform Tools to PATH
+      - name: Add Android Platform Tools to PATH
+        run: echo "/usr/local/android-sdk/platform-tools" >> $GITHUB_PATH
 
-      - name: create AVD and generate snapshot for caching
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+      # ✅ Start Android Emulator with consistent API version (34)
+      - name: Start Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+            api-level: 34
+            target: google_apis
+            arch: x86_64
+            disable-animations: true
+            emulator-options: "-no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none"
+            force-avd-creation: true
+            cores: 2
+            avd-name: test
+            emulator-boot-timeout: 600
+            emulator-port: 5554
+            script: echo "Emulator started"
 
-      - name: run tests
-        uses: reactivecircus/android-emulator-runner@v2
+      # ✅ Install Node.js dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # ✅ Build Android APK (using Cordova in debug mode)
+      - name: Build Android APK
+        run: |
+          npx cordova platform add android
+          npx cordova build android --debug
+
+      # ✅ Start Appium Server in headless mode
+      - name: Start Appium Server
+        run: |
+          nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
+          sleep 10  # Wait for Appium to fully start
+
+      # ✅ Run WebdriverIO (Appium) tests
+      - name: Run WebdriverIO Tests
+        run: npx wdio run wdio.conf.js
+
+      # ✅ On failure, upload Appium logs for debugging
+      - name: Upload Appium Logs on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          api-level: ${{ matrix.api-level }}
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          script: ./gradlew connectedCheck
+          name: appium-logs
+          path: appium.log
+          retention-days: 7
