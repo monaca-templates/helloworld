@@ -28,7 +28,7 @@ jobs:
         run: echo "/usr/local/android-sdk/platform-tools" >> $GITHUB_PATH
 
       # ✅ Start Android Emulator with consistent API version (34)
-      - name: Start Android Emulator
+      - name: Start Emulator and Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
             api-level: 34
@@ -41,27 +41,41 @@ jobs:
             avd-name: test
             emulator-boot-timeout: 600
             emulator-port: 5554
-            script: echo "Emulator started"
+            script: |
+                echo "Emulator started. Running tests..."
+                # Install dependencies, build APK, etc.
+                echo "Installing Node.js dependencies..."
+                npm install
+                echo "Building Android APK..."
+                npx cordova platform add android
+                npx cordova build android --debug
+                # Start Appium Server in background
+                echo "Starting Appium Server..."
+                nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
+                sleep 10
+                # Run WebdriverIO tests
+                echo "Running WebdriverIO tests..."
+                npx wdio run wdio.conf.js
 
-      # ✅ Install Node.js dependencies
-      - name: Install Dependencies
-        run: npm install
+    #   # ✅ Install Node.js dependencies
+    #   - name: Install Dependencies
+    #     run: npm install
 
-      # ✅ Build Android APK (using Cordova in debug mode)
-      - name: Build Android APK
-        run: |
-          npx cordova platform add android
-          npx cordova build android --debug
+    #   # ✅ Build Android APK (using Cordova in debug mode)
+    #   - name: Build Android APK
+    #     run: |
+    #       npx cordova platform add android
+    #       npx cordova build android --debug
 
-      # ✅ Start Appium Server in headless mode
-      - name: Start Appium Server
-        run: |
-          nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
-          sleep 10  # Wait for Appium to fully start
+    #   # ✅ Start Appium Server in headless mode
+    #   - name: Start Appium Server
+    #     run: |
+    #       nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
+    #       sleep 10  # Wait for Appium to fully start
 
-      # ✅ Run WebdriverIO (Appium) tests
-      - name: Run WebdriverIO Tests
-        run: npx wdio run wdio.conf.js
+    #   # ✅ Run WebdriverIO (Appium) tests
+    #   - name: Run WebdriverIO Tests
+    #     run: npx wdio run wdio.conf.js
 
       # ✅ On failure, upload Appium logs for debugging
       - name: Upload Appium Logs on Failure
