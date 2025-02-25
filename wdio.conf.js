@@ -68,15 +68,27 @@ exports.config = {
     //     webSocketUrl: true,
     //     unhandledPromptBehavior: 'ignore'
     // }],
+    // capabilities: [{
+    //     platformName: 'Android',
+    //     // browserName: 'Chrome', // ❌ Remove if testing a native app
+    //     'appium:deviceName': 'Pixel_3a_API_34_extension_level_7_arm64-v8a',
+    //     'appium:platformVersion': '14.0',
+    //     'appium:automationName': 'UiAutomator2',
+    //     'appium:app': './platforms/android/app/build/outputs/apk/debug/app-debug.apk', // ✅ Add the path to your APK
+    //     'appium:appWaitActivity': 'MainActivity',
+    //     'appium:chromedriverExecutable': './chromedriver', 
+    //     webSocketUrl: true,
+    //     unhandledPromptBehavior: 'ignore'
+    // }],
     capabilities: [{
         platformName: 'Android',
-        // browserName: 'Chrome', // ❌ Remove if testing a native app
-        'appium:deviceName': 'Pixel_3a_API_34_extension_level_7_arm64-v8a',
+        'appium:deviceName': 'test', // must match your AVD name
         'appium:platformVersion': '14.0',
         'appium:automationName': 'UiAutomator2',
-        'appium:app': './platforms/android/app/build/outputs/apk/debug/app-debug.apk', // ✅ Add the path to your APK
+        'appium:app': './platforms/android/app/build/outputs/apk/debug/app-debug.apk',
         'appium:appWaitActivity': 'MainActivity',
-        'appium:chromedriverExecutable': './chromedriver', 
+        // Enable automatic chromedriver download:
+        'appium:chromedriverAutodownload': true,
         webSocketUrl: true,
         unhandledPromptBehavior: 'ignore'
     }],
