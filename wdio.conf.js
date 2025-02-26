@@ -82,16 +82,15 @@ exports.config = {
     // }],
     capabilities: [{
         platformName: 'Android',
-        'appium:deviceName': 'test', // must match your AVD name
+        'appium:deviceName': 'test', // ensure this matches your emulator AVD name
         'appium:platformVersion': '14.0',
         'appium:automationName': 'UiAutomator2',
         'appium:app': './platforms/android/app/build/outputs/apk/debug/app-debug.apk',
         'appium:appWaitActivity': 'MainActivity',
-        // Enable automatic chromedriver download:
-        'appium:chromedriverAutodownload': true,
+        'appium:chromedriverExecutable': './chromedriver',  // points to the downloaded binary
         webSocketUrl: true,
         unhandledPromptBehavior: 'ignore'
-    }],
+      }],
 
     //
     // ===================
