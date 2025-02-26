@@ -52,12 +52,12 @@ jobs:
                 npx cordova platform add android
                 npx cordova build android --debug
                 # Set the desired Chromedriver version for Chrome 113
-                CHROMEDRIVER_VERSION=113.0.5672.63
-                echo "Downloading Chromedriver version ${CHROMEDRIVER_VERSION}..."
-                wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
-                unzip chromedriver_linux64.zip
-                chmod +x chromedriver
-                ls -la
+                # CHROMEDRIVER_VERSION=113.0.5672.63
+                # echo "Downloading Chromedriver version ${CHROMEDRIVER_VERSION}..."
+                # wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
+                # unzip chromedriver_linux64.zip
+                # chmod +x chromedriver
+                # ls -la
                 # Start Appium Server in background
                 echo "Starting Appium Server..."
                 nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
