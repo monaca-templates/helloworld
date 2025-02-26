@@ -1,5 +1,7 @@
 const { expect, browser, $ } = require('@wdio/globals');
 
+const screenshotDir = './test/screenshots';
+
 describe('My Cordova App', () => {
     it('should open the app and verify the home page', async () => {
         // ✅ Activate the app
@@ -28,6 +30,13 @@ describe('My Cordova App', () => {
         // ✅ Verify and click "Start Demo" button
         const demoButton = await $('a.button--large');
         await expect(demoButton).toBeExisting();
+        await browser.saveScreenshot(`${screenshotDir}/home_page.png`);
+
+        // Demo page
         await demoButton.click();
+        // ✅ Wait for the app to fully load
+        await browser.pause(3000);
+
+        await browser.saveScreenshot(`${screenshotDir}/demo_page_navigation.png`);
     });
 });

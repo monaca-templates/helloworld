@@ -60,7 +60,7 @@ exports.config = {
         'appium:chromedriverExecutable': './chromedriver',  // points to the downloaded binary
         webSocketUrl: true,
         unhandledPromptBehavior: 'ignore'
-      }],
+    }],
 
     //
     // ===================
