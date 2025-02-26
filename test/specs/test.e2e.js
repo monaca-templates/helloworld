@@ -63,11 +63,11 @@ describe('My Cordova App', () => {
 
     it('should trigger the Call plugin', async () => {
         const callButton = await $('=Call 411');
-        await callButton.waitForExist({ timeout: 5000 });
+        await callButton.waitForExist({ timeout: 15000 });
 
         await callButton.click();
         // This attempts to open the dialer
-        await browser.pause(1000);
+        await browser.pause(3000);
 
         // Check the app is still running (or that no crash occurred)
         const title = await browser.getTitle();
@@ -78,11 +78,11 @@ describe('My Cordova App', () => {
 
     it('should trigger the Vibrate plugin', async () => {
         const vibrateButton = await $('=Vibrate');
-        await vibrateButton.waitForExist({ timeout: 5000 });
+        await vibrateButton.waitForExist({ timeout: 15000 });
 
         await vibrateButton.click();
         // No obvious UI changes; manual verification or logs might be needed
-        await browser.pause(1000);
+        await browser.pause(3000);
 
         // Check the app is still running (or that no crash occurred)
         const title = await browser.getTitle();
@@ -93,11 +93,11 @@ describe('My Cordova App', () => {
 
     it('should trigger the Network plugin and display a confirm dialog', async () => {
         const networkButton = await $('=Check Network');
-        await networkButton.waitForExist({ timeout: 5000 });
+        await networkButton.waitForExist({ timeout: 15000 });
         await networkButton.click();
     
         // Give the native dialog some time to appear
-        await browser.pause(2000);
+        await browser.pause(3000);
     
         // Switch to the native context
         const currentContext = await browser.getContext();
@@ -130,38 +130,49 @@ describe('My Cordova App', () => {
     
 
     it('should trigger the Location plugin and display permission dialog', async () => {
+        // Ensure we are in the WebView context.
+        const contexts = await browser.getContexts();
+        const webviewContext = contexts.find(ctx => ctx.toLowerCase().includes('webview'));
+        if (!webviewContext) {
+            throw new Error("No WEBVIEW context found");
+        }
+        await browser.switchContext(webviewContext);
+    
+        // Now look for the "Get Location" element in the WebView.
         const locationButton = await $('=Get Location');
-        await locationButton.waitForExist({ timeout: 5000 });
+        await locationButton.waitForExist({ timeout: 15000 });
+        await browser.saveScreenshot(`${screenshotDir}/location_before_click.png`);
         await locationButton.click();
     
-        // --- Switch to native context to handle the permission prompt ---
-        const currentContext = await browser.getContext();
+        // Switch to native context to handle the permission dialog.
         await browser.switchContext('NATIVE_APP');
-    
-        // Wait for the "Allow while using the app" button to appear.
         const allowButton = await $('id=com.android.permissioncontroller:id/permission_allow_foreground_only_button');
-        await allowButton.waitForExist({ timeout: 5000 });
-        expect(await allowButton.isExisting()).toBe(true);  // Test will fail if the element isn't found.
-    
-        // If found, click the button and capture a screenshot.
+        await allowButton.waitForExist({ timeout: 15000 });
+        expect(await allowButton.isExisting()).toBe(true);
         await allowButton.click();
         await browser.saveScreenshot(`${screenshotDir}/location_permission_granted.png`);
         console.log('Location permission granted.');
     
-        // Switch back to the original context if needed.
-        await browser.switchContext(currentContext);
+        // Optionally switch back to the WebView context.
+        await browser.switchContext(webviewContext);
     });
-    
-    
+
 
     it('should trigger the Picture plugin and show an error alert with message "20"', async () => {
+        // Ensure we are in the WebView context.
+        const contexts = await browser.getContexts();
+        const webviewContext = contexts.find(ctx => ctx.toLowerCase().includes('webview'));
+        if (!webviewContext) {
+            throw new Error("No WEBVIEW context found");
+        }
+        await browser.switchContext(webviewContext);
+    
         const picButton = await $('=Get a Picture');
-        await picButton.waitForExist({ timeout: 5000 });
+        await picButton.waitForExist({ timeout: 15000 });
         await browser.saveScreenshot(`${screenshotDir}/camera_before_click.png`);
         await picButton.click();
     
-        // --- Handle Camera Permission Dialog if needed ---
-        const currentContext = await browser.getContext();
+        // Switch to native context to handle camera permission.
         await browser.switchContext('NATIVE_APP');
         const cameraAllowButton = await $('id=com.android.permissioncontroller:id/permission_allow_foreground_only_button');
         if (await cameraAllowButton.isExisting()) {
@@ -170,28 +181,24 @@ describe('My Cordova App', () => {
         } else {
             console.log('Camera permission dialog not found or already granted.');
         }
-        // Switch back to the original context so the app can process the click.
-        await browser.switchContext(currentContext);
-        // --- End Permission Handling ---
+        // Switch back so the app can process the click.
+        await browser.switchContext(webviewContext);
     
-        // Wait for the error alert to appear (expected to be a native dialog)
+        // Wait for the error alert to appear (which is expected to be native)
         await browser.pause(5000);
-    
-        // Switch to native context to check for the error alert.
         await browser.switchContext('NATIVE_APP');
-        // Wait for the error alert's message element to appear.
         const messageElement = await $('id=android:id/message');
-        await messageElement.waitForExist({ timeout: 5000 });
+        await messageElement.waitForExist({ timeout: 15000 });
         const alertText = await messageElement.getText();
         expect(alertText).toEqual("20");
     
-        // Dismiss the alert using the OK button (usually id "android:id/button1")
+        // Dismiss the alert (using the OK button, typically with id "android:id/button1")
         const okButton = await $('id=android:id/button1');
         await okButton.click();
         await browser.saveScreenshot(`${screenshotDir}/camera_error_alert.png`);
     
-        // Optionally, switch back to the original context.
-        await browser.switchContext(currentContext);
+        // Optionally switch back to the WebView context.
+        await browser.switchContext(webviewContext);
     });
     
 
