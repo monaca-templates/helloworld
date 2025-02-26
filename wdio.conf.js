@@ -50,36 +50,6 @@ exports.config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    // capabilities: [{
-    //     // capabilities for local Appium web tests on an Android Emulator
-    //     platformName: 'Android',
-    //     browserName: 'Chrome',
-    //     'appium:deviceName': 'Android GoogleAPI Emulator',
-    //     'appium:platformVersion': '12.0',
-    //     'appium:automationName': 'UiAutomator2'
-    // }],
-    // capabilities: [{
-    //     platformName: 'Android',
-    //     browserName: 'Chrome',
-    //     'appium:deviceName': 'Pixel_3a_API_34_extension_level_7_arm64-v8a',
-    //     'appium:platformVersion': '14.0',
-    //     'appium:automationName': 'UiAutomator2',
-    //     'appium:chromedriverExecutable': './chromedriver',  // ✅ Use manually downloaded version
-    //     webSocketUrl: true,
-    //     unhandledPromptBehavior: 'ignore'
-    // }],
-    // capabilities: [{
-    //     platformName: 'Android',
-    //     // browserName: 'Chrome', // ❌ Remove if testing a native app
-    //     'appium:deviceName': 'Pixel_3a_API_34_extension_level_7_arm64-v8a',
-    //     'appium:platformVersion': '14.0',
-    //     'appium:automationName': 'UiAutomator2',
-    //     'appium:app': './platforms/android/app/build/outputs/apk/debug/app-debug.apk', // ✅ Add the path to your APK
-    //     'appium:appWaitActivity': 'MainActivity',
-    //     'appium:chromedriverExecutable': './chromedriver', 
-    //     webSocketUrl: true,
-    //     unhandledPromptBehavior: 'ignore'
-    // }],
     capabilities: [{
         platformName: 'Android',
         'appium:deviceName': 'test', // ensure this matches your emulator AVD name

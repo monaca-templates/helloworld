@@ -52,12 +52,11 @@ jobs:
                 npx cordova platform add android
                 npx cordova build android --debug
                 # Set the desired Chromedriver version for Chrome 113
-                # CHROMEDRIVER_VERSION=113.0.5672.63
-                # echo "Downloading Chromedriver version ${CHROMEDRIVER_VERSION}..."
-                # wget -q https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip
-                # unzip chromedriver_linux64.zip
-                # chmod +x chromedriver
-                # ls -la
+                echo "Downloading Chromedriver version 113.0.5672.63"
+                wget -q https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
+                unzip chromedriver_linux64.zip
+                chmod +x chromedriver
+                rm -rf chromedriver_linux64.zip
                 # Start Appium Server in background
                 echo "Starting Appium Server..."
                 nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
@@ -66,31 +65,18 @@ jobs:
                 echo "Running WebdriverIO tests..."
                 npx wdio run wdio.conf.js
 
-    #   # ✅ Install Node.js dependencies
-    #   - name: Install Dependencies
-    #     run: npm install
-
-    #   # ✅ Build Android APK (using Cordova in debug mode)
-    #   - name: Build Android APK
-    #     run: |
-    #       npx cordova platform add android
-    #       npx cordova build android --debug
-
-    #   # ✅ Start Appium Server in headless mode
-    #   - name: Start Appium Server
-    #     run: |
-    #       nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
-    #       sleep 10  # Wait for Appium to fully start
-
-    #   # ✅ Run WebdriverIO (Appium) tests
-    #   - name: Run WebdriverIO Tests
-    #     run: npx wdio run wdio.conf.js
-
-      # ✅ On failure, upload Appium logs for debugging
-      - name: Upload Appium Logs on Failure
-        if: failure()
+      # ✅ Upload Logs on Failure
+      - name: Upload Appium Logs
         uses: actions/upload-artifact@v4
         with:
           name: appium-logs
           path: appium.log
+          retention-days: 7
+
+      # ✅ Upload Screenshots if Tests Fail
+      - name: Upload Screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: test/screenshots
           retention-days: 7
