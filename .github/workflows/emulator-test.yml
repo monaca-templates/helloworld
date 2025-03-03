@@ -45,36 +45,34 @@ jobs:
                 echo "project list"
                 ls -la
                 echo "Emulator started. Running tests..."
-                # Install dependencies, build APK, etc.
                 echo "Installing Node.js dependencies..."
                 npm install
                 echo "Building Android APK..."
                 npx cordova platform add android
                 npx cordova build android --debug
-                # Set the desired Chromedriver version for Chrome 113
                 echo "Downloading Chromedriver version 113.0.5672.63"
                 wget -q https://chromedriver.storage.googleapis.com/113.0.5672.63/chromedriver_linux64.zip
                 unzip chromedriver_linux64.zip
                 chmod +x chromedriver
                 rm -rf chromedriver_linux64.zip
-                # Start Appium Server in background
                 echo "Starting Appium Server..."
                 nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
                 sleep 10
-                # Run WebdriverIO tests
                 echo "Running WebdriverIO tests..."
                 npx wdio run wdio.conf.js
 
-      # ✅ Upload Logs on Failure
+      # ✅ Upload Logs on Failure (runs even if tests fail)
       - name: Upload Appium Logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: appium-logs
           path: appium.log
           retention-days: 7
 
-      # ✅ Upload Screenshots if Tests Fail
+      # ✅ Upload Screenshots if Tests Fail (runs even if tests fail)
       - name: Upload Screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: screenshots
