@@ -5,6 +5,6 @@
     "xcode_version": "15.0.1",
     "title-ja": "はじめてのMonacaアプリ",
     "title-en": "Hello Monaca!",
-    "cordova_android_platform": "13.0.0",
+    "cordova_android_platform": "14.0.1",
     "cordova_ios_platform": "7.1.1"
 }
