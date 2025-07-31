@@ -7,30 +7,45 @@
   },
   "scripts": {
     "monaca:preview": "npm run dev",
-    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081"
+    "dev": "browser-sync start -s www/ --watch --port 8080 --ui-port 8081",
+    "wdio": "wdio run ./wdio.conf.js"
   },
   "devDependencies": {
+    "@wdio/appium-service": "^9.9.0",
+    "@wdio/cli": "^9.9.0",
+    "@wdio/local-runner": "^9.9.0",
+    "@wdio/mocha-framework": "^9.9.0",
+    "@wdio/spec-reporter": "^9.9.0",
+    "appium": "^2.15.0",
+    "appium-chromium-driver": "^1.5.0",
+    "appium-uiautomator2-driver": "^4.0.1",
     "browser-sync": "~2.27.7",
-    "cordova": "^12.0.0"
+    "cordova": "^12.0.0",
+    "cordova-android": "^13.0.0"
   },
   "dependencies": {
-    "cordova-plugin-camera": "6.0.0",
+    "cordova-plugin-camera": "8.0.0",
     "cordova-plugin-device": "2.1.0",
-    "cordova-plugin-geolocation": "4.1.0",
+    "cordova-plugin-geolocation": "5.0.0",
+    "cordova-plugin-inappbrowser": "5.0.0",
     "cordova-plugin-network-information": "3.0.0",
-    "cordova-plugin-vibration": "3.1.1",
-    "monaca-plugin-monaca-core": "3.3.1",
-    "cordova-plugin-inappbrowser": "5.0.0"
+    "cordova-plugin-vibration": "3.1.1"
   },
   "cordova": {
     "plugins": {
-      "cordova-plugin-camera": {},
+      "cordova-plugin-camera": {
+        "ANDROIDX_CORE_VERSION": "1.8.0"
+      },
       "cordova-plugin-device": {},
-      "cordova-plugin-geolocation": {},
+      "cordova-plugin-geolocation": {
+        "GPS_REQUIRED": "true"
+      },
       "cordova-plugin-network-information": {},
       "cordova-plugin-vibration": {},
-      "monaca-plugin-monaca-core": {},
       "cordova-plugin-inappbrowser": {}
-    }
+    },
+    "platforms": [
+      "android"
+    ]
   }
 }

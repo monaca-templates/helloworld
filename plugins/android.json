@@ -1,0 +1,32 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-camera": {
+      "ANDROIDX_CORE_VERSION": "1.6.+",
+      "PACKAGE_NAME": "com.example.helloworld"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.example.helloworld"
+    },
+    "cordova-plugin-geolocation": {
+      "GPS_REQUIRED": "true",
+      "PACKAGE_NAME": "com.example.helloworld"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.example.helloworld"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "com.example.helloworld"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.example.helloworld"
+    }
+  },
+  "dependent_plugins": {}
+}

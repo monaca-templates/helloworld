@@ -1,0 +1,128 @@
+name: UI Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04  # ✅ Use Ubuntu 24.04 for compatibility
+
+    steps:
+      # ✅ Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # ✅ Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+
+      # ✅ Install Java JDK (Required for Android SDK & Gradle)
+      - name: Set up Java JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android SDK
+        run: |
+            echo "📥 Installing Android SDK..."
+            export ANDROID_SDK_ROOT=$HOME/android-sdk
+            export ANDROID_HOME=$ANDROID_SDK_ROOT
+            export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH
+        
+            # Create SDK directories
+            mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+            mkdir -p $ANDROID_SDK_ROOT/platform-tools
+            mkdir -p $ANDROID_SDK_ROOT/emulator
+            mkdir -p $ANDROID_SDK_ROOT/system-images/android-34/google_apis/x86_64
+            cd $ANDROID_SDK_ROOT/cmdline-tools
+        
+            # Download & extract SDK tools
+            curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+            unzip -q sdk-tools.zip
+            rm sdk-tools.zip
+            mv cmdline-tools latest  # ✅ Fix broken SDK structure
+        
+            # Accept licenses and install required packages
+            yes | sdkmanager --licenses
+            sdkmanager --install "platform-tools" "build-tools;34.0.0" "platforms;android-34" "system-images;android-34;google_apis;x86_64" "emulator"
+  
+            # Verify SDK installation
+            ls -la $ANDROID_SDK_ROOT
+            ls -la $ANDROID_SDK_ROOT/system-images/android-34/google_apis/x86_64/
+
+      - name: Create & Start Emulator
+        run: |
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export ANDROID_AVD_HOME=$HOME/.android/avd
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/emulator:$PATH
+      
+          # Delete any old AVD
+          rm -rf $ANDROID_AVD_HOME/test-avd.avd || true
+      
+          # Create the AVD with explicit system image path using --sdk_root to force correct SDK location
+          echo "no" | avdmanager --sdk_root=$ANDROID_SDK_ROOT create avd -n test-avd -k "system-images;android-34;google_apis;x86_64" --device "pixel_5" --force --path $ANDROID_AVD_HOME/test-avd.avd
+      
+          # Ensure the AVD config file uses your custom SDK path instead of the default one
+          sed -i "s|/usr/local/lib/android/sdk|$ANDROID_SDK_ROOT|g" $ANDROID_AVD_HOME/test-avd.avd/config.ini
+      
+          # Start the emulator with the -sdk-root flag so it uses your custom SDK
+          nohup emulator -sdk-root $ANDROID_SDK_ROOT -avd test-avd -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -skin 1080x1920 -memory 2048 -accel off -wipe-data &
+          sleep 120  # Wait to ensure the emulator fully boots
+      
+          adb devices
+          adb shell input keyevent 82  # Unlock screen
+
+
+      # ✅ Install Dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # ✅ Build Android APK
+      - name: Build Android APK
+        run: |
+          npx cordova platform add android
+          npx cordova build android --debug
+
+      # ✅ Start Appium Server (Headless Mode)
+      - name: Start Appium Server
+        run: |
+          nohup npx appium --base-path /wd/hub > appium.log 2>&1 &
+          sleep 10  # Wait for Appium to start
+
+      # ✅ Run WebdriverIO Tests
+      - name: Run WebdriverIO Tests
+        run: npx wdio run wdio.conf.js
+
+      # ✅ Restart ADB if Emulator is Not Detected
+      - name: Restart ADB
+        if: failure()
+        run: |
+          adb kill-server || true
+          adb start-server
+          adb devices
+
+      # ✅ Debug Emulator Logs on Failure
+      - name: Debug Emulator Logs
+        if: failure()
+        run: |
+          cat /tmp/android-runner/emu-crash-*.db || echo "⚠️ No crash logs found."
+
+      # ✅ Upload Logs on Failure
+      - name: Upload Appium Logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-logs
+          path: appium.log
+          retention-days: 7
+
+      # ✅ Upload Screenshots if Tests Fail
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: test/screenshots
+          retention-days: 7
