@@ -62,7 +62,9 @@ function dump_pic(data) {
     viewport.style.position = "absolute";
     viewport.style.top = "10px";
     viewport.style.left = "10px";
-    document.getElementById("test_img").src = "data:image/jpeg;base64," + data;
+    const src = /^\s*data:/i.test(data)
+        ? data : `data:image/jpeg;base64,${data}`;
+    document.getElementById("test_img").src = src;
 }
 
 function fail(msg) {
