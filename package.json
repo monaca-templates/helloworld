@@ -3,7 +3,7 @@
   "version": "4.1.4",
   "displayName": "Monaca Template HelloCordova",
   "engines": {
-    "node": ">=18.16"
+    "node": ">=20.17"
   },
   "scripts": {
     "monaca:preview": "npm run dev",
@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "browser-sync": "~2.27.7",
-    "cordova": "^12.0.0"
+    "cordova": "^13.0.0"
   },
   "dependencies": {
     "cordova-plugin-camera": "8.0.0",
