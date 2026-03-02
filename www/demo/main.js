@@ -62,7 +62,12 @@ function dump_pic(data) {
     viewport.style.position = "absolute";
     viewport.style.top = "10px";
     viewport.style.left = "10px";
-    document.getElementById("test_img").src = "data:image/jpeg;base64," + data;
+
+    // data: で始まっていればそのまま、そうでなければプレフィックスを付与
+    const src = /^\s*data:/i.test(data)
+    ? data
+    : `data:image/jpeg;base64,${data}`;
+    document.getElementById("test_img").src = src;
 }
 
 function fail(msg) {
@@ -74,7 +79,8 @@ function show_pic() {
         quality : 50,
         destinationType: Camera.DestinationType.DATA_URL,
         targetWidth: 100,
-        targetHeight: 100
+        targetHeight: 100,
+        correctOrientation: true
     });
 }
 

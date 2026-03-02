@@ -1,9 +1,9 @@
 {
   "name": "monaca-template-helloworld",
-  "version": "4.1.4",
+  "version": "4.1.5",
   "displayName": "Monaca Template HelloCordova",
   "engines": {
-    "node": ">=18.16"
+    "node": ">=20.17"
   },
   "scripts": {
     "monaca:preview": "npm run dev",
@@ -11,16 +11,16 @@
   },
   "devDependencies": {
     "browser-sync": "~2.27.7",
-    "cordova": "^12.0.0"
+    "cordova": "^13.0.0"
   },
   "dependencies": {
-    "cordova-plugin-camera": "6.0.0",
+    "cordova-plugin-camera": "8.0.0",
     "cordova-plugin-device": "2.1.0",
     "cordova-plugin-geolocation": "4.1.0",
     "cordova-plugin-network-information": "3.0.0",
     "cordova-plugin-vibration": "3.1.1",
     "monaca-plugin-monaca-core": "3.3.1",
-    "cordova-plugin-inappbrowser": "5.0.0"
+    "cordova-plugin-inappbrowser": "6.0.0"
   },
   "cordova": {
     "plugins": {
