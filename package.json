@@ -1,6 +1,6 @@
 {
   "name": "monaca-template-helloworld",
-  "version": "4.1.5",
+  "version": "4.1.6",
   "displayName": "Monaca Template HelloCordova",
   "engines": {
     "node": ">=20.17"
