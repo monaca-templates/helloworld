@@ -79,7 +79,7 @@
     <icon src="/res/android/icon/xxhdpi.png" density="xxhdpi"/>
     <icon src="/res/android/icon/xxxhdpi.png" density="xxxhdpi"/>
     <preference name="AndroidWindowSplashScreenAnimatedIcon" value="res/android/screen/window_splashscreen_icon.png"/>
-    <preference name="AndroidWindowSplashScreenBackground" value="#ffffff"/>
+    <preference name="SplashScreenBackgroundColor" value="#ffffff"/>
   </platform>
   <platform name="electron">
     <icon src="/res/electron/icon/icon_electron_512.png" width="512" height="512"/>
